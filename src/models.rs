@@ -1,4 +1,4 @@
-use chrono::{DateTime, Utc};
+//use chrono::{DateTime, Utc};
 use clap::ValueEnum;
 use serde::{Deserialize, Serialize};
 use std::fmt;
@@ -9,7 +9,7 @@ pub struct Task {
     pub id: u32,
     pub title: String,
     pub description: String,
-    pub deadline: Option<DateTime<Utc>>,
+    //pub deadline: Option<DateTime<Utc>>,
     pub status: TaskStatus,
 }
 

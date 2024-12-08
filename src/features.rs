@@ -37,9 +37,9 @@ pub fn list_tasks(projects: &[Project], project_id: u32) {
                 println!("\nTitle: {}", task.title);
                 println!("\nDescription: {}", task.description);
                 println!("\nStatus: {}", task.status);
-                if let Some(deadline) = task.deadline {
-                    println!("\n Deadline: {}", deadline);
-                }
+                //if let Some(deadline) = task.deadline {
+                //    println!("\n Deadline: {}", deadline);
+                //}
                 println!();
             }
         }

@@ -1,15 +1,12 @@
 mod cli;
 mod features;
-mod file;
-mod logic;
 mod models;
 
-use crate::models::TaskStatus;
-
 use crate::features::{add_project, add_task, list_tasks, load_projects, save_projects};
-use crate::models::{Project, Task};
+use crate::models::{Project, Task, TaskStatus};
 use clap::Parser;
 use cli::{Commands, CLI};
+use std::io::{self, Write};
 
 fn main() {
     let args = CLI::parse();
@@ -18,8 +15,18 @@ fn main() {
     let mut projects = load_projects(file_path);
 
     match args.command {
-        Commands::AddProject { name, description } => {
-            println!("Adding project: {} - {}", name, description);
+        Commands::AddProject => {
+            println!("Enter the name of the project:");
+            io::stdout().flush().unwrap();
+            let mut name = String::new();
+            io::stdin().read_line(&mut name).unwrap();
+            let name = name.trim().to_string();
+
+            println!("Enter the description of the project:");
+            io::stdout().flush().unwrap();
+            let mut description = String::new();
+            io::stdin().read_line(&mut description).unwrap();
+            let description = description.trim().to_string();
 
             let new_project = Project {
                 id: projects.len() as u32 + 1, //Create new ID for each Project
@@ -31,23 +38,41 @@ fn main() {
             save_projects(file_path, &projects);
             println!("Project '{}' added successfully.", name);
         }
-        Commands::AddTask {
-            project_id,
-            title,
-            description,
-            deadline,
-            status,
-        } => {
-            println!(
-                "Adding task: {} - {} to project {}",
-                title, description, project_id
-            );
+        Commands::AddTask { project_id } => {
+            println!("Enter task title:");
+            io::stdout().flush().unwrap();
+            let mut title = String::new();
+            io::stdin().read_line(&mut title).unwrap();
+            let title = title.trim().to_string();
+
+            println!("Enter task description:");
+            io::stdout().flush().unwrap();
+            let mut description = String::new();
+            io::stdin().read_line(&mut description).unwrap();
+            let description = description.trim().to_string();
+
+            println!("Enter task status (Pending, InProgress, Completed):");
+
+            io::stdout().flush().unwrap();
+            let mut status = String::new();
+            io::stdin().read_line(&mut status).unwrap();
+            let status = status.trim().to_string();
+
+            let status = match status.to_lowercase().as_str() {
+                "pending" => TaskStatus::Pending,
+                "inprogress" | "in_progress" => TaskStatus::InProgress,
+                "completed" => TaskStatus::Completed,
+                _ => {
+                    println!("Invalid status. Defaulting to Pending.");
+                    TaskStatus::Pending
+                }
+            };
+
             let new_task = Task {
                 id: projects.iter().flat_map(|p| &p.tasks).count() as u32 + 1, // New ID
                 title: title.clone(),
-                description: description.clone(),
-                deadline: None, // Optional for now
                 status: status,
+                description: description.clone(),
             };
             add_task(&mut projects, project_id, new_task);
             save_projects(file_path, &projects);

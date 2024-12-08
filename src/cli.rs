@@ -1,4 +1,3 @@
-use crate::models::TaskStatus;
 use clap::{Parser, Subcommand};
 
 #[derive(Parser, Debug)]
@@ -11,19 +10,8 @@ pub struct CLI {
 
 #[derive(Subcommand, Debug)]
 pub enum Commands {
-    AddProject {
-        name: String,
-        description: String,
-    },
-    AddTask {
-        project_id: u32,
-        title: String,
-        description: String,
-        deadline: Option<String>,
-        status: TaskStatus,
-    },
+    AddProject,
+    AddTask { project_id: u32 },
     ListProjects,
-    ListTasks {
-        project_id: u32,
-    },
+    ListTasks { project_id: u32 },
 }
