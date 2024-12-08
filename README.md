@@ -1,4 +1,4 @@
-# project-manager
+# rustyTask
 Rust-based CLI project manager application 
 
 
